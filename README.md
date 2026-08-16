@@ -1,16 +1,31 @@
-Total Amount Extraction from Bills
-This project aims to extract the total amount from various types of bills using Optical Character Recognition (OCR) techniques. The process involves converting the PDF files into images, extracting text from the images using Google Vision API, and then finding the total amount from the extracted text.
+# HackerEarth — Bojack's Restaurant Total Earnings
 
-Step 1: Convert PDF to Image
-In the first step, I used the Wand library to convert the PDF files into images. This step is necessary because Google Vision API requires an image as input. I converted all the PDF files in the test set into JPEG images.
+HackerEarth ML challenge: given images of restaurant bills, extract the total amount from each one.
 
-Step 2: Extract Text from Images
-In the second step, I used Google Vision API to extract text from the images. I saved all the extracted text to text files. This step is crucial because I need to find the total amount from the text.
+## Approach
 
-Step 3: Find Total Amount
-In the third step, I found the total amount from the extracted text. Initially, I observed that all the total variables are floating numbers. Hence, I listed all the digits in the text file and took the maximum from each list. This approach gave me an accuracy of 99.8.
+**Step 1 — PDF to image** (`Convert PDFToImage.ipynb`)
+Used the `wand` library to convert PDFs from the test set into JPEG images. Google Vision API requires image input, not PDFs.
 
-However, I analyzed the errors and found out that some bills had an option to provide change, resulting in errors in the extraction process. To overcome this, I added all the digits in the text and checked if that was present in the list or not. This approach gave me an accuracy of 99.92.
+**Step 2 — OCR** (`ExtractText.ipynb`)
+Passed each image through Google Vision API and dumped the extracted text to `.txt` files.
 
-Conclusion
-In conclusion, this project demonstrates how OCR techniques can be used to extract the total amount from various types of bills. The approach involves converting PDF files to images, extracting text from images using Google Vision API, and finding the total amount from the extracted text. The accuracy of the approach can be improved further by considering various scenarios like change, discount, and taxes.
+**Step 3 — Find the total** (`FindTotalAmount.ipynb`)
+Totals are always floating-point numbers. Initial approach: list all floats in the text and take the maximum → **99.8% accuracy**.
+
+Error analysis revealed the edge case: some bills had a "change" line, which sometimes held a higher value than the actual total. Fix: check if the sum of line amounts was also present in the text and use that for secondary validation → **99.92% accuracy**.
+
+## Files
+
+| File | Purpose |
+|---|---|
+| `Convert PDFToImage.ipynb` | PDF → JPEG conversion |
+| `ExtractText.ipynb` | Google Vision API OCR |
+| `FindTotalAmount.ipynb` | Total extraction logic |
+| `Extracted text.rar` | Pre-extracted text output from the test set |
+
+## Dependencies
+
+- `wand` (ImageMagick Python binding)
+- Google Cloud Vision API (needs a service account key)
+- Standard Python: `re`, `os`
